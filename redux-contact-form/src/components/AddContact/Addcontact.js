@@ -1,33 +1,34 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router";
+import axios from "axios";
+// import { useNavigate } from "react-router";
 
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 
 export const Addcontact = () => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
+  const [contacts, setcontacts] = useState({
+    name: "",
+    email: "",
+    phone: "",
+  });
 
-  const navigate = useNavigate();
+  function setInput(e) {
+    setcontacts({ ...contacts, [e.target.name]: e.target.value });
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const checkContactEmailExists = contacts.filter((contact) =>
-      contact.email === email ? contact : null
-    );
-    const checkContactPhoneExists = contacts.filter((contact) =>
-      contact.phone === phone ? contact : null
-    );
+    // const { name, email, phone } = contacts;
+    // console.log(name, email, phone);
+    console.log(contacts);
 
-    if (!email || !name || !phone) {
-      return toast.warning("Please fill in all fields!!");
-    }
-    if (checkContactEmailExists.length > 0) {
-      return toast.error("This email already exists!!");
-    }
-    if (checkContactPhoneExists.length > 0) {
-      return toast.error("This phone number already exists!!");
-    }
+    axios
+      .post("http://localhost:8080/add", contacts)
+      .then((response) => {
+        console.log(response);
+      })
+      .then((err) => {
+        return err;
+      });
   };
 
   return (
@@ -41,8 +42,9 @@ export const Addcontact = () => {
                 className="form-control"
                 type="text"
                 placeholder="Full name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                name="name"
+                value={contacts.name}
+                onChange={(e) => setInput(e)}
               />
             </div>
             <div className="form-group">
@@ -50,8 +52,9 @@ export const Addcontact = () => {
                 className="form-control"
                 type="email"
                 placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                name="email"
+                value={contacts.email}
+                onChange={(e) => setInput(e)}
               />
             </div>
             <div className="form-group">
@@ -59,8 +62,9 @@ export const Addcontact = () => {
                 className="form-control"
                 type="number"
                 placeholder="Phone"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                name="phone"
+                value={contacts.phone}
+                onChange={(e) => setInput(e)}
               />
             </div>
             <div className="form-group">
